@@ -1,96 +1,231 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script defer src="/_vercel/insights/script.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css"
-    />
-    <title>Vercel HTML Starter</title>
-    <meta
-      name="description"
-      content="High-performance HTML based website template."
-    />
-  </head>
-  <body>
-    <h1>Vercel HTML Starter</h1>
-    <p>
-      This template is a simple, but powerful single
-      <code>index.html</code> file deployed to
-      <a href="https://vercel.com">Vercel</a>. When your site is deployed, all
-      static assets (like HTML, JavaScript, CSS, images, and more) are deployed
-      globally to every
-      <a href="https://vercel.com/docs/concepts/edge-network/overview"
-        >Vercel Edge Network</a
-      >
-      region.
-    </p>
-    <h2>Simple, privacy-friendly analytics</h2>
-    <p>
-      Want to understand your visitor traffic? Vercel Analytics gives you
-      first-party, privacy-friendly traffic analytics for your HTML site. This
-      template is already configured using the following script:
-    </p>
-    <pre><code>&lt;script defer src="/_vercel/insights/script.js"&gt;&lt;/script&gt;</code></pre>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/analytics">Vercel Analytics</a>.
-    </p>
-    <h2>Integrated with git</h2>
-    <p>
-      Deploying updates to your site is as simple as
-      <code>git push</code> thanks to Vercel's advanced
-      <a href="https://vercel.com/docs/concepts/git">Git Integration</a>.
-      Support for GitHub, GitLab, Bitbucket is zero-configuration, and with the
-      flexible Vercel CLI and API, you can integrate with any tool possible.
-    </p>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/git">Git Integration</a>.
-    </p>
-    <h2>Fast <code>gzip</code> compression</h2>
-    <p>
-      To help ensure the smallest possible file sizes for your static assets,
-      the Vercel Edge Network compresses files by default using
-      <code>gzip</code>. You can also optionally use
-      <code>brotli</code> compressesion if you prefer.
-    </p>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/edge-network/compression"
-        >compression</a
-      >.
-    </p>
-    <h2>Advanced routing configuration</h2>
-    <p>
-      Vercel gives you a variety of ways to configure the routing of your
-      website. For example, adding redirects, rewrites, or headers to your page.
-      While you can use <code>vercel.json</code> to define these through JSON,
-      you can also express your routing configuration as code using
-      <a href="https://vercel.com/docs/concepts/functions/edge-middleware"
-        >Vercel Edge Middleware</a
-      >.
-    </p>
-    <p>
-      Middleware runs before the
-      <a href="https://vercel.com/docs/concepts/edge-network/caching"
-        >Vercel Edge Network Cache</a
-      >, so you can configure routing exactly as your application needs. For
-      example, this template uses <code>middleware.js</code> defined in the root
-      of the repository to add additional security headers to the site:
-    </p>
-    <pre><code>referrer-policy: origin-when-cross-origin
-strict-transport-security: max-age=31536000; includeSubDomains; preload
-x-content-type-options: nosniff
-x-dns-prefetch-control: on
-x-frame-options: DENY</code></pre>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/functions/edge-middleware"
-        >Vercel Edge Middleware</a
-      >.
-    </p>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Period & Ovulation Calendar with Mental Health Assistant</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .next-period { background-color: #CCE8FF; }
+    .fertile-window { background-color: #BAF2DC; }
+    .ovulation-day { background-color: #FFC9C9; }
+    .pregnancy-test-day { background-color: #FEE3A3; }
+    .selected-date { background-color: #4C51BF; color: white; }
+    .tooltip {
+      position: absolute;
+      padding: 8px 12px;
+      background-color: rgba(0, 0, 0, 0.85);
+      color: white;
+      border-radius: 8px;
+      font-size: 14px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      display: none;
+      z-index: 10;
+      transition: opacity 0.3s ease;
+    }
+    .tooltip::before {
+      content: "";
+      position: absolute;
+      top: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 6px;
+      border-style: solid;
+      border-color: transparent transparent rgba(0, 0, 0, 0.85) transparent;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-r from-blue-50 to-green-50 min-h-screen flex items-center justify-center">
+  <div class="bg-white shadow-lg rounded-lg max-w-6xl w-full flex flex-col lg:flex-row overflow-hidden">
+    <!-- Calendar Section -->
+    <div class="w-full lg:w-1/2 p-6 bg-gradient-to-b from-blue-100 to-blue-50">
+      <h2 class="text-2xl font-bold text-blue-800 mb-4 text-center">Period & Ovulation Calendar</h2>
+      <div class="flex justify-between items-center mb-4">
+        <button id="prevMonth" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition">← Prev</button>
+        <h3 id="calendarHeader" class="text-xl font-semibold text-blue-700"></h3>
+        <button id="nextMonth" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition">Next →</button>
+      </div>
+      <div class="grid grid-cols-7 gap-2 text-center font-medium text-gray-600">
+        <span>Sun</span>
+        <span>Mon</span>
+        <span>Tue</span>
+        <span>Wed</span>
+        <span>Thu</span>
+        <span>Fri</span>
+        <span>Sat</span>
+      </div>
+      <div id="calendarDays" class="grid grid-cols-7 gap-2 mt-2"></div>
+
+      <!-- Color Legend -->
+      <div class="mt-6">
+        <h3 class="text-lg font-semibold mb-3 text-blue-800">Legend</h3>
+        <div class="grid grid-cols-2 gap-2 text-sm">
+          <div class="flex items-center">
+            <span class="block w-4 h-4 rounded mr-2 next-period"></span> Next Period
+          </div>
+          <div class="flex items-center">
+            <span class="block w-4 h-4 rounded mr-2 fertile-window"></span> Fertile Window
+          </div>
+          <div class="flex items-center">
+            <span class="block w-4 h-4 rounded mr-2 ovulation-day"></span> Ovulation Day
+          </div>
+          <div class="flex items-center">
+            <span class="block w-4 h-4 rounded mr-2 pregnancy-test-day"></span> Pregnancy Test Day
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form & Mental Health Chatbot -->
+    <div class="w-full lg:w-1/2 p-6 bg-white space-y-6">
+      <h2 class="text-2xl font-bold text-gray-800">Track Your Cycle & Mental Wellness</h2>
+      <form id="inputForm" class="space-y-6">
+        <div>
+          <label for="cycleLength" class="block text-sm font-medium text-gray-700">How Long Is Your Average Cycle?</label>
+          <select id="cycleLength" class="w-full mt-1 border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            <option value="28">28 days</option>
+            <option value="29">29 days</option>
+            <option value="30">30 days</option>
+            <option value="31">31 days</option>
+          </select>
+        </div>
+        <p class="text-gray-700">Selected Last Period: <span id="selectedDateText" class="font-bold">None</span></p>
+        <button type="button" id="setCycle" class="w-full bg-blue-600 text-white py-2 rounded-lg shadow-md hover:bg-blue-700 transition">Set Cycle</button>
+      </form>
+
+      <!-- Date Details -->
+      <div>
+        <h3 class="text-xl font-semibold text-gray-800">Date Highlights</h3>
+        <ul id="dateDetails" class="list-disc pl-5 text-gray-700"></ul>
+      </div>
+
+      <!-- Mental Health Chatbot -->
+      <div>
+        <h3 class="text-xl font-semibold text-gray-800">Mental Health Assistant</h3>
+        <div id="chatbot" class="border rounded-lg p-4 h-64 overflow-y-auto bg-gray-100">
+          <div id="chatMessages" class="space-y-2"></div>
+        </div>
+        <div class="mt-2 flex">
+          <input type="text" id="chatInput" class="flex-1 border rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Ask me anything...">
+          <button id="sendMessage" class="bg-blue-600 text-white px-4 py-2 rounded-lg ml-2 hover:bg-blue-700 transition">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tooltip" id="tooltip"></div>
+
+  <script>
+    const calendarDays = document.getElementById('calendarDays');
+    const calendarHeader = document.getElementById('calendarHeader');
+    const cycleLengthSelect = document.getElementById('cycleLength');
+    const tooltip = document.getElementById('tooltip');
+    const selectedDateText = document.getElementById('selectedDateText');
+    const dateDetails = document.getElementById('dateDetails');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const sendMessage = document.getElementById('sendMessage');
+    let currentMonth = new Date();
+    let cycleLength = 28;
+    let lastPeriod = null;
+
+    function generateCalendar() {
+      calendarDays.innerHTML = '';
+      const firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+      const lastDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
+
+      calendarHeader.textContent = firstDay.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+      for (let i = 0; i < firstDay.getDay(); i++) {
+        calendarDays.innerHTML += '<div></div>';
+      }
+
+      for (let day = 1; day <= lastDay.getDate(); day++) {
+        const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+        const dayElement = document.createElement('div');
+        dayElement.classList.add('p-2', 'text-center', 'rounded-lg', 'cursor-pointer', 'hover:bg-blue-100', 'transition');
+        dayElement.dataset.date = date.toISOString().split('T')[0];
+        dayElement.textContent = day;
+
+        if (lastPeriod) {
+          const diffDays = Math.floor((date - lastPeriod) / (1000 * 60 * 60 * 24));
+          const ovulationDay = cycleLength - 14; // Approximation
+          const pregnancyTestDay = ovulationDay + 10;
+
+          if (diffDays % cycleLength === 0) {
+            dayElement.classList.add('next-period');
+            dayElement.dataset.tooltip = 'Next Period';
+          } else if (diffDays % cycleLength === ovulationDay) {
+            dayElement.classList.add('ovulation-day');
+            dayElement.dataset.tooltip = 'Ovulation Day';
+          } else if (diffDays % cycleLength >= ovulationDay - 5 && diffDays % cycleLength <= ovulationDay) {
+            dayElement.classList.add('fertile-window');
+            dayElement.dataset.tooltip = 'Fertile Window';
+          } else if (diffDays % cycleLength === pregnancyTestDay) {
+            dayElement.classList.add('pregnancy-test-day');
+            dayElement.dataset.tooltip = 'Pregnancy Test Day';
+          }
+        }
+
+        dayElement.addEventListener('click', () => {
+          lastPeriod = new Date(dayElement.dataset.date);
+          selectedDateText.textContent = dayElement.dataset.date;
+          Array.from(calendarDays.children).forEach(child => child.classList.remove('selected-date'));
+          dayElement.classList.add('selected-date');
+          generateCalendar();
+        });
+
+        dayElement.addEventListener('mouseover', e => {
+          if (dayElement.dataset.tooltip) {
+            tooltip.textContent = dayElement.dataset.tooltip;
+            tooltip.style.display = 'block';
+            tooltip.style.top = e.pageY + 10 + 'px';
+            tooltip.style.left = e.pageX + 10 + 'px';
+          }
+        });
+
+        dayElement.addEventListener('mouseout', () => {
+          tooltip.style.display = 'none';
+        });
+
+        calendarDays.appendChild(dayElement);
+      }
+    }
+
+    document.getElementById('prevMonth').addEventListener('click', () => {
+      currentMonth.setMonth(currentMonth.getMonth() - 1);
+      generateCalendar();
+    });
+
+    document.getElementById('nextMonth').addEventListener('click', () => {
+      currentMonth.setMonth(currentMonth.getMonth() + 1);
+      generateCalendar();
+    });
+
+    document.getElementById('setCycle').addEventListener('click', () => {
+      cycleLength = parseInt(cycleLengthSelect.value, 10);
+      generateCalendar();
+    });
+
+    // Chatbot logic...
+    sendMessage.addEventListener('click', () => {
+      const userMessage = chatInput.value.trim();
+      if (userMessage) {
+        addMessageToChat('user', userMessage);
+        chatInput.value = '';
+        setTimeout(() => addMessageToChat('bot', 'This is a simulated response. Your AI chatbot logic goes here!'), 1000);
+      }
+    });
+
+    function addMessageToChat(sender, message) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = sender === 'user' ? 'text-right' : 'text-left';
+      messageDiv.innerHTML = `<span class="px-4 py-2 rounded-lg inline-block ${sender === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-300 text-black'}">${message}</span>`;
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    generateCalendar();
+  </script>
+</body>
 </html>
